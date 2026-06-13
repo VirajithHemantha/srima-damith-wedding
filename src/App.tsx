@@ -10,7 +10,7 @@ import { Sparkles, MapPin, Calendar, Clock, Volume2, VolumeX } from "lucide-reac
  */
 
 const mandalaImage = "/images/mandala_gold.png";
-const brideGroomImage = "/images/10.png";
+const brideGroomImage = "/images/backround srima.webp";
 
 type InviteImageProps = React.ComponentProps<"img"> & {
   eager?: boolean;
