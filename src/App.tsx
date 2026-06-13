@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, MapPin, Calendar, Clock } from "lucide-react";
+import { Sparkles, MapPin, Calendar, Clock, Volume2, VolumeX } from "lucide-react";
 
 /**
  * Premium Sri Lankan Wedding Invitation Theme
@@ -201,6 +201,22 @@ function CountdownTimer() {
 export default function WeddingInvitation() {
   const [isOpened, setIsOpened] = useState(false);
   const [isLowPerformanceMode, setIsLowPerformanceMode] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handleOpen = () => {
+    setIsOpened(true);
+    if (audioRef.current) {
+      audioRef.current.play().catch(console.error);
+    }
+  };
+
+  const toggleMute = () => {
+    if (audioRef.current) {
+      audioRef.current.muted = !audioRef.current.muted;
+      setIsMuted(audioRef.current.muted);
+    }
+  };
 
   useEffect(() => {
     const motionMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -268,7 +284,7 @@ export default function WeddingInvitation() {
             {/* Gatefold Envelope */}
             <div
               className="relative w-full max-w-[430px] aspect-[1/1.42] flex items-center justify-center group cursor-pointer perspective-1000"
-              onClick={() => setIsOpened(true)}
+              onClick={handleOpen}
             >
               <div className="absolute -inset-8 bg-[radial-gradient(circle,_rgba(212,154,70,0.35)_0%,_rgba(236,210,161,0.2)_45%,_transparent_75%)] blur-3xl opacity-90" />
               <div className="absolute inset-0 bg-gradient-to-b from-[#fffefb] via-[#fff9f2] to-[#fff6ee] rounded-[1.4rem] shadow-[0_28px_80px_-20px_rgba(104,65,34,0.35)] border border-theme-200/80 overflow-hidden" />
@@ -371,17 +387,32 @@ export default function WeddingInvitation() {
             animate={{ opacity: 1 }}
             className="website-shell relative z-20 w-full"
           >
-            {/* Sticky Return Button */}
-            <motion.button
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              onClick={() => setIsOpened(false)}
-              className="fixed top-6 right-6 z-50 bg-white/80 backdrop-blur-md p-3 rounded-full shadow-lg border border-theme-100 text-theme-800 hover:bg-theme-50 transition-colors"
-            >
-              <div className="flex flex-col items-center">
-                <div className="text-[8px] uppercase tracking-widest font-bold">Close</div>
-              </div>
-            </motion.button>
+            {/* Audio Element */}
+            <audio ref={audioRef} src="/bg-music.mp3" loop />
+
+            {/* Sticky Top Controls */}
+            <div className="fixed top-6 right-6 z-50 flex items-center gap-3">
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                onClick={toggleMute}
+                className="bg-white/80 backdrop-blur-md p-3 rounded-full shadow-lg border border-theme-100 text-theme-800 hover:bg-theme-50 transition-colors"
+                title={isMuted ? "Unmute" : "Mute"}
+              >
+                {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+              </motion.button>
+
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                onClick={() => setIsOpened(false)}
+                className="bg-white/80 backdrop-blur-md p-3 rounded-full shadow-lg border border-theme-100 text-theme-800 hover:bg-theme-50 transition-colors"
+              >
+                <div className="flex flex-col items-center">
+                  <div className="text-[8px] uppercase tracking-widest font-bold">Close</div>
+                </div>
+              </motion.button>
+            </div>
 
             {/* Hero Section */}
             <section className="min-h-[100dvh] w-full flex items-center justify-center p-4 md:p-12 relative overflow-hidden bg-[#fdfaf5]">
