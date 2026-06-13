@@ -235,3 +235,37 @@ html, body {
   opacity: 0.3;
   border-radius: 10px;
 }
+
+@keyframes foil-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.text-gold-foil {
+  background: linear-gradient(
+    -45deg,
+    var(--color-theme-700) 0%,
+    var(--color-theme-400) 25%,
+    var(--color-theme-100) 50%,
+    var(--color-theme-400) 75%,
+    var(--color-theme-800) 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: foil-shimmer 6s linear infinite;
+}
+
+.glow-hover {
+  transition: all 0.3s ease-out;
+}
+.glow-hover:hover {
+  box-shadow: 0 0 15px rgba(212, 154, 70, 0.4), 0 0 30px rgba(212, 154, 70, 0.2);
+  border-color: var(--color-theme-400);
+  transform: translateY(-2px);
+}

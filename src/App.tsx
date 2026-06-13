@@ -49,22 +49,20 @@ function MandalaFrame({ minimal = false }: { minimal?: boolean }) {
   );
 }
 
-function FloatingPetals({ disabled = false }: { disabled?: boolean }) {
+function FloatingSparkles({ disabled = false }: { disabled?: boolean }) {
   const [isLowPowerMode, setIsLowPowerMode] = useState(false);
-  const [petals, setPetals] = useState<Array<{
+  const [sparkles, setSparkles] = useState<Array<{
     id: number;
     x: number;
     size: number;
-    rotation: number;
     duration: number;
     delay: number;
-    color: string;
-    drift: number;
+    opacity: number;
   }>>([]);
 
   useEffect(() => {
     if (disabled) {
-      setPetals([]);
+      setSparkles([]);
       return;
     }
 
@@ -73,66 +71,48 @@ function FloatingPetals({ disabled = false }: { disabled?: boolean }) {
     setIsLowPowerMode(reduceMotion || isMobile);
 
     if (reduceMotion) {
-      setPetals([]);
+      setSparkles([]);
       return;
     }
 
-    const colors = ["#f1d6e8", "#e8bdd9", "#dd9ec8", "#fdf7fb"];
-    const petalCount = isMobile ? 10 : 18;
-    const newPetals = Array.from({ length: petalCount }).map((_, i) => ({
+    const sparkleCount = isMobile ? 20 : 40;
+    const newSparkles = Array.from({ length: sparkleCount }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
-      size: Math.random() * 7 + 7,
-      rotation: Math.random() * 360,
-      duration: Math.random() * 11 + 16,
+      size: Math.random() * 4 + 2,
+      duration: Math.random() * 12 + 8,
       delay: Math.random() * 20,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      drift: Math.random() * 24 - 12,
+      opacity: Math.random() * 0.6 + 0.2,
     }));
 
-    setPetals(newPetals);
+    setSparkles(newSparkles);
   }, [disabled]);
 
-  if (disabled) {
-    return null;
-  }
+  if (disabled) return null;
 
   return (
-    <div className={`pointer-events-none fixed inset-0 overflow-hidden z-40 ${isLowPowerMode ? "opacity-70" : ""}`}>
-      {petals.map((petal) => (
+    <div className={`pointer-events-none fixed inset-0 overflow-hidden z-40 ${isLowPowerMode ? "opacity-50" : ""}`}>
+      {sparkles.map((sparkle) => (
         <motion.div
-          key={petal.id}
-          className="absolute drop-shadow-[0_2px_6px_rgba(243,167,205,0.5)]"
-          style={{ color: petal.color }}
+          key={sparkle.id}
+          className="absolute rounded-full bg-white drop-shadow-[0_0_8px_rgba(212,154,70,0.8)]"
+          style={{ width: sparkle.size, height: sparkle.size, opacity: sparkle.opacity }}
           initial={{
-            x: `${petal.x}vw`,
-            y: "-10vh",
-            rotate: petal.rotation,
-            opacity: 0,
+            x: `${sparkle.x}vw`,
+            y: "110vh",
           }}
           animate={{
-            y: "110vh",
-            x: `${petal.x + petal.drift}vw`,
-            rotate: petal.rotation + (isLowPowerMode ? 360 : 720),
-            opacity: [0, 0.9, 0.8, 0],
+            y: "-10vh",
+            opacity: [0, sparkle.opacity, 0],
+            scale: [0, 1.2, 0]
           }}
           transition={{
-            duration: isLowPowerMode ? petal.duration * 1.2 : petal.duration,
+            duration: isLowPowerMode ? sparkle.duration * 1.5 : sparkle.duration,
             repeat: Infinity,
-            delay: petal.delay,
+            delay: sparkle.delay,
             ease: "linear",
           }}
-        >
-          <svg
-            width={petal.size}
-            height={petal.size}
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="drop-shadow-sm"
-          >
-            <path d="M12,2C12,2 10,6 10,10C10,14 12,22 12,22C12,22 14,14 14,10C14,6 12,2 12,2Z" />
-          </svg>
-        </motion.div>
+        />
       ))}
     </div>
   );
@@ -173,7 +153,7 @@ function CountdownTimer() {
           className="relative group"
         >
           {/* Ornamental Frame container */}
-          <div className="relative w-[4.5rem] h-[6.5rem] sm:w-20 sm:h-28 md:w-32 md:h-44 bg-white rounded-t-full shadow-[0_15px_35px_-10px_rgba(0,0,0,0.08)] border border-theme-100/60 flex flex-col items-center justify-center overflow-hidden transition-transform duration-700 group-hover:-translate-y-3">
+          <div className="relative w-[4.5rem] h-[6.5rem] sm:w-20 sm:h-28 md:w-32 md:h-44 bg-white rounded-t-full shadow-[0_15px_35px_-10px_rgba(0,0,0,0.08)] border border-theme-100/60 flex flex-col items-center justify-center overflow-hidden transition-transform duration-700 group-hover:-translate-y-3 glow-hover">
             <div className="absolute top-0 right-0 opacity-[0.03] paper-grain w-full h-full pointer-events-none" />
             <div className="absolute inset-1.5 sm:inset-2 md:inset-3 border-[0.5px] border-theme-300/50 rounded-t-full pointer-events-none" />
 
@@ -255,7 +235,7 @@ export default function WeddingInvitation() {
         } relative font-montserrat scroll-smooth`}
     >
       <MandalaFrame minimal={isLowPerformanceMode} />
-      <FloatingPetals disabled={isLowPerformanceMode} />
+      <FloatingSparkles disabled={isLowPerformanceMode} />
 
       <AnimatePresence mode="wait">
         {!isOpened ? (
@@ -265,8 +245,9 @@ export default function WeddingInvitation() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{
               opacity: 0,
-              scale: 1.1,
-              transition: { duration: 0.8, ease: "easeInOut" }
+              scale: 1.15,
+              filter: "brightness(1.5) blur(4px)",
+              transition: { duration: 1.2, ease: "easeInOut" }
             }}
             className="flex flex-col items-center justify-center p-6 relative z-10 w-full"
           >
@@ -275,7 +256,7 @@ export default function WeddingInvitation() {
               <span className="inline-block px-5 py-2 rounded-full bg-theme-50 border border-theme-200 text-[10px] uppercase tracking-[0.5em] text-theme-700 font-bold mb-6">
                 Save the Date
               </span>
-              <h1 className="font-cinzel text-4xl md:text-5xl text-stone-800 mb-4 tracking-tight">
+              <h1 className="font-cinzel text-4xl md:text-5xl text-gold-foil mb-4 tracking-tight pb-1">
                 Srima & Damith
               </h1>
               <p className="text-stone-500 text-sm tracking-[0.2em] font-light">JULY 30, 2026</p>
@@ -360,7 +341,7 @@ export default function WeddingInvitation() {
                 <div className="absolute inset-1.5 rounded-full border border-theme-400/50" />
                 <div className="absolute inset-3 rounded-full border border-theme-500/30" />
                 <div className="text-center relative z-10">
-                  <p className="font-cinzel text-[1.7rem] font-bold text-stone-800 leading-none">S&D</p>
+                  <p className="font-cinzel text-[1.7rem] font-bold text-gold-foil leading-none pb-1">S&D</p>
                   <div className="h-px w-12 bg-stone-400 mx-auto my-1.5" />
                   <p className="text-[8px] uppercase tracking-[0.35em] font-bold text-stone-600">Open</p>
                 </div>
@@ -465,7 +446,7 @@ export default function WeddingInvitation() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 1, duration: 0.8 }}
-                      className="font-playball text-[3rem] sm:text-[3.5rem] md:text-[5rem] text-stone-800 leading-[1.1] drop-shadow-sm"
+                      className="font-playball text-[3rem] sm:text-[3.5rem] md:text-[5rem] text-gold-foil leading-[1.1] drop-shadow-sm pb-2"
                     >
                       Srima
                     </motion.h1>
@@ -481,7 +462,7 @@ export default function WeddingInvitation() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 1.4, duration: 0.8 }}
-                      className="font-playball text-[3rem] sm:text-[3.5rem] md:text-[5rem] text-stone-800 leading-[1.1] drop-shadow-sm"
+                      className="font-playball text-[3rem] sm:text-[3.5rem] md:text-[5rem] text-gold-foil leading-[1.1] drop-shadow-sm pb-2"
                     >
                       Damith
                     </motion.h1>
@@ -759,7 +740,7 @@ export default function WeddingInvitation() {
                     <div className="pt-8 w-full md:w-auto">
                       <button
                         onClick={() => window.open('https://maps.app.goo.gl/VajJMubf1LV21TSF9', '_blank')}
-                        className="w-full md:w-auto flex items-center justify-center gap-4 bg-theme-800 text-white px-10 py-5 rounded-full font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs hover:bg-theme-900 hover:shadow-xl hover:shadow-theme-900/20 transition-all duration-300 group"
+                        className="w-full md:w-auto flex items-center justify-center gap-4 bg-theme-800 text-white px-10 py-5 rounded-full font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs hover:bg-theme-900 transition-all duration-300 group glow-hover"
                       >
                         <MapPin className="w-4 h-4 group-hover:-translate-y-1 transition-transform duration-300" />
                         Get Directions
@@ -945,7 +926,7 @@ export default function WeddingInvitation() {
                         Thank You
                       </div>
                       <p className="text-[9px] md:text-[11px] uppercase tracking-[0.8em] text-theme-600 font-bold relative z-10 bg-[#fdfaf5] px-6 py-2 rounded-full border border-theme-100/50 shadow-sm">With Love</p>
-                      <h3 className="font-playball text-[3.2rem] sm:text-6xl md:text-8xl text-theme-900 relative z-10 drop-shadow-sm px-4 pt-4 leading-none">Srima & Damith</h3>
+                      <h3 className="font-playball text-[3.2rem] sm:text-6xl md:text-8xl text-gold-foil relative z-10 drop-shadow-sm px-4 pt-4 pb-2 leading-none">Srima & Damith</h3>
 
                       <motion.img
                         initial={{ opacity: 0, y: 24, scale: 0.95 }}
