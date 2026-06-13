@@ -398,7 +398,7 @@ export default function WeddingInvitation() {
             {/* Hero Section */}
             <section 
               className="min-h-[100dvh] w-full flex items-center justify-center p-4 md:p-12 relative overflow-hidden bg-[#fdfaf5]"
-              style={{ backgroundImage: 'url(/background.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}
+              style={{ backgroundImage: "url('/images/background main.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}
             >
               {/* Overlay for better readability if needed */}
               <div className="absolute inset-0 bg-white/40" />
