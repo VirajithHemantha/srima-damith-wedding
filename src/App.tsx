@@ -806,6 +806,8 @@ export default function WeddingInvitation() {
                   </div>
                   <p className="text-stone-300 text-sm md:text-base max-w-md mx-auto leading-relaxed mb-16 tracking-wide font-light">
                     We would be absolutely thrilled to celebrate with you. Kindly respond by the end of May.
+                    <br /><br />
+                    <span className="font-bold text-theme-200">RSVP Contact:</span> Damith - <a href="tel:0768085101" className="hover:text-white transition-colors">0768085101</a>
                   </p>
 
                   {/* Premium RSVP Form */}
