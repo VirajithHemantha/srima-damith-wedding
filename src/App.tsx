@@ -396,14 +396,18 @@ export default function WeddingInvitation() {
             </div>
 
             {/* Hero Section */}
-            <section className="min-h-[100dvh] w-full flex items-center justify-center p-4 md:p-12 relative overflow-hidden bg-[#fdfaf5]">
+            <section className="min-h-[100dvh] w-full flex items-center justify-center p-4 md:p-12 relative overflow-hidden bg-gradient-to-br from-[#fcf7ed] via-[#fdfaf5] to-[#f5ebd6]">
               {/* Background texture */}
-              <div className="absolute inset-0 opacity-[0.03] paper-grain" />
+              <div className="absolute inset-0 opacity-[0.05] paper-grain" />
+
+              {/* Decorative Background Mandalas */}
+              <InviteImage src={mandalaImage} alt="" className="absolute top-0 left-0 w-[50vw] md:w-96 h-[50vw] md:h-96 opacity-[0.07] mix-blend-multiply -translate-x-1/3 -translate-y-1/3 animate-spin-slow pointer-events-none" style={{ animationDuration: '40s' }} />
+              <InviteImage src={mandalaImage} alt="" className="absolute bottom-0 right-0 w-[50vw] md:w-96 h-[50vw] md:h-96 opacity-[0.07] mix-blend-multiply translate-x-1/3 translate-y-1/3 animate-spin-slow pointer-events-none" style={{ animationDuration: '40s' }} />
 
               {/* Large Watermark Monogram */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 0.03, scale: 1 }}
+                animate={{ opacity: 0.05, scale: 1 }}
                 transition={{ duration: 2, ease: "easeOut" }}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-cinzel text-[40vw] text-theme-900 pointer-events-none whitespace-nowrap leading-none select-none z-0"
               >
@@ -415,7 +419,7 @@ export default function WeddingInvitation() {
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
-                className="relative z-10 w-full max-w-[420px] min-h-[500px] h-[85vh] md:h-[80vh] bg-[#ffffff] rounded-t-full shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-theme-100 flex flex-col items-center overflow-hidden p-6 pt-12 md:p-10 md:pt-16"
+                className="relative z-10 w-full max-w-[420px] min-h-[500px] h-[85vh] md:h-[80vh] bg-gradient-to-b from-white to-[#fffaf3] rounded-t-full shadow-[0_20px_60px_-15px_rgba(212,154,70,0.2)] border border-theme-200/50 flex flex-col items-center overflow-hidden p-6 pt-12 md:p-10 md:pt-16"
               >
                 {/* Arch outline decoration */}
                 <div className="absolute inset-3 sm:inset-5 border-[0.5px] border-theme-400/40 rounded-t-full pointer-events-none" />
