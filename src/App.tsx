@@ -237,6 +237,9 @@ export default function WeddingInvitation() {
       <MandalaFrame minimal={isLowPerformanceMode} />
       <FloatingSparkles disabled={isLowPerformanceMode} />
 
+      {/* Audio Element */}
+      <audio ref={audioRef} src="/bg-music.mp3" loop />
+
       <AnimatePresence mode="wait">
         {!isOpened ? (
           <motion.div
@@ -368,9 +371,6 @@ export default function WeddingInvitation() {
             animate={{ opacity: 1 }}
             className="website-shell relative z-20 w-full"
           >
-            {/* Audio Element */}
-            <audio ref={audioRef} src="/bg-music.mp3" loop />
-
             {/* Sticky Top Controls */}
             <div className="fixed top-6 right-6 z-50 flex items-center gap-3">
               <motion.button
