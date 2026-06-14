@@ -184,6 +184,83 @@ export default function WeddingInvitation() {
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  // Form States
+  const [rsvpName, setRsvpName] = useState("");
+  const [rsvpGuests, setRsvpGuests] = useState("1");
+  const [rsvpDiet, setRsvpDiet] = useState("");
+  const [isSubmittingRsvp, setIsSubmittingRsvp] = useState(false);
+  const [rsvpSuccess, setRsvpSuccess] = useState(false);
+
+  const [wishesName, setWishesName] = useState("");
+  const [wishesMessage, setWishesMessage] = useState("");
+  const [isSubmittingWishes, setIsSubmittingWishes] = useState(false);
+  const [wishesSuccess, setWishesSuccess] = useState(false);
+
+  // Replace with your Google Apps Script Web App URL
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbxM_s58J5x0TcybIp39h0WyxHBNCGa9_Wv_WApm1iH7wDdx1DT3cbA9--FyOMLDpGuReg/exec";
+
+  const handleRsvpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!scriptUrl || scriptUrl === "YOUR_WEB_APP_URL_HERE") {
+      alert("Please set the Google Apps Script Web App URL first.");
+      return;
+    }
+    setIsSubmittingRsvp(true);
+    try {
+      await fetch(scriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "RSVP",
+          fullName: rsvpName,
+          guests: rsvpGuests,
+          dietaryNotes: rsvpDiet,
+        }),
+      });
+      setRsvpSuccess(true);
+      setRsvpName("");
+      setRsvpGuests("1");
+      setRsvpDiet("");
+      setTimeout(() => setRsvpSuccess(false), 5000);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to submit RSVP.");
+    } finally {
+      setIsSubmittingRsvp(false);
+    }
+  };
+
+  const handleWishesSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!scriptUrl || scriptUrl === "YOUR_WEB_APP_URL_HERE") {
+      alert("Please set the Google Apps Script Web App URL first.");
+      return;
+    }
+    setIsSubmittingWishes(true);
+    try {
+      await fetch(scriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "Wishes",
+          name: wishesName,
+          message: wishesMessage,
+        }),
+      });
+      setWishesSuccess(true);
+      setWishesName("");
+      setWishesMessage("");
+      setTimeout(() => setWishesSuccess(false), 5000);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to submit Wishes.");
+    } finally {
+      setIsSubmittingWishes(false);
+    }
+  };
+
   const handleOpen = () => {
     setIsOpened(true);
     if (audioRef.current) {
@@ -396,7 +473,7 @@ export default function WeddingInvitation() {
             </div>
 
             {/* Hero Section */}
-            <section 
+            <section
               className="min-h-[100dvh] w-full flex items-center justify-center p-4 md:p-12 relative overflow-hidden bg-[#fdfaf5]"
               style={{ backgroundImage: "url('/images/background main.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}
             >
@@ -816,16 +893,19 @@ export default function WeddingInvitation() {
                   <p className="text-stone-300 text-sm md:text-base max-w-md mx-auto leading-relaxed mb-16 tracking-wide font-light">
                     We would be absolutely thrilled to celebrate with you. Kindly respond by the end of May.
                     <br /><br />
-                    <span className="font-bold text-theme-200">RSVP Contact:</span> Damith - <a href="tel:0768085101" className="hover:text-white transition-colors">0768085101</a>
+                    <span className="font-bold text-theme-200">RSVP Contact:</span> Srima - <a href="tel:0768085101" className="hover:text-white transition-colors">0768085101</a>
                   </p>
 
                   {/* Premium RSVP Form */}
                   <div className="w-full bg-white/5 backdrop-blur-md p-6 sm:p-8 md:p-12 rounded-[2rem] border border-white/10 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.5)]">
-                    <form className="space-y-8 text-left" onSubmit={(e) => e.preventDefault()}>
+                    <form className="space-y-8 text-left" onSubmit={handleRsvpSubmit}>
                       <div className="space-y-3">
                         <label className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-theme-200 ml-2">Full Name</label>
                         <input
                           type="text"
+                          value={rsvpName}
+                          onChange={(e) => setRsvpName(e.target.value)}
+                          required
                           placeholder="John & Jane Doe"
                           className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-lg md:text-xl tracking-wide"
                         />
@@ -835,7 +915,8 @@ export default function WeddingInvitation() {
                         <label className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-theme-200 ml-2">Guests</label>
                         <div className="relative">
                           <select
-                            defaultValue="1"
+                            value={rsvpGuests}
+                            onChange={(e) => setRsvpGuests(e.target.value)}
                             className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-lg md:text-xl tracking-wide appearance-none cursor-pointer"
                           >
                             <option value="1" className="bg-[#2c2a26] text-white">1 Guest (Just Me)</option>
@@ -854,6 +935,8 @@ export default function WeddingInvitation() {
                         <label className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-theme-200 ml-2">Dietary Notes</label>
                         <input
                           type="text"
+                          value={rsvpDiet}
+                          onChange={(e) => setRsvpDiet(e.target.value)}
                           placeholder="Allergies, Vegan, etc."
                           className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-lg md:text-xl tracking-wide"
                         />
@@ -861,10 +944,12 @@ export default function WeddingInvitation() {
 
                       <div className="pt-10">
                         <button
-                          className="w-full bg-theme-200 text-stone-900 py-5 rounded-full font-bold uppercase tracking-[0.3em] text-[10px] md:text-sm hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all duration-300 group inline-flex justify-center items-center gap-4"
+                          type="submit"
+                          disabled={isSubmittingRsvp}
+                          className="w-full bg-theme-200 text-stone-900 py-5 rounded-full font-bold uppercase tracking-[0.3em] text-[10px] md:text-sm hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all duration-300 group inline-flex justify-center items-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <span className="w-1.5 h-1.5 bg-stone-900 rotate-45 group-hover:scale-150 transition-transform" />
-                          Send RSVP
+                          {isSubmittingRsvp ? "Sending..." : rsvpSuccess ? "RSVP Sent!" : "Send RSVP"}
                           <span className="w-1.5 h-1.5 bg-stone-900 rotate-45 group-hover:scale-150 transition-transform" />
                         </button>
                       </div>
@@ -905,11 +990,14 @@ export default function WeddingInvitation() {
                       {/* Decorative internal lines */}
                       <div className="absolute inset-2 md:inset-4 border-[0.5px] border-theme-200/50 rounded-tr-[3.5rem] rounded-bl-[3.5rem] pointer-events-none transition-colors duration-700 group-hover:border-theme-300/80" />
 
-                      <form className="space-y-8 text-left relative z-10" onSubmit={(e) => e.preventDefault()}>
+                      <form className="space-y-8 text-left relative z-10" onSubmit={handleWishesSubmit}>
                         <div className="space-y-3">
                           <label className="text-[7px] md:text-[9px] uppercase tracking-[0.4em] font-bold text-stone-400 ml-2">Your Name</label>
                           <input
                             type="text"
+                            value={wishesName}
+                            onChange={(e) => setWishesName(e.target.value)}
+                            required
                             placeholder="John Doe"
                             className="w-full bg-stone-50/50 border-b border-theme-200 px-4 py-4 text-theme-900 placeholder:text-stone-300 focus:outline-none focus:border-theme-400 focus:bg-white transition-all font-cinzel text-lg tracking-wide rounded-t-lg"
                           />
@@ -918,14 +1006,21 @@ export default function WeddingInvitation() {
                           <label className="text-[7px] md:text-[9px] uppercase tracking-[0.4em] font-bold text-stone-400 ml-2">Your Message</label>
                           <textarea
                             rows={4}
+                            value={wishesMessage}
+                            onChange={(e) => setWishesMessage(e.target.value)}
+                            required
                             placeholder="Wishing you a lifetime of happiness..."
                             className="w-full bg-stone-50/50 border-b border-theme-200 px-4 py-4 text-theme-900 placeholder:text-stone-300 focus:outline-none focus:border-theme-400 focus:bg-white transition-all font-cinzel text-lg tracking-wide resize-none rounded-t-lg"
                           />
                         </div>
                         <div className="pt-6 flex justify-center">
-                          <button className="bg-theme-800 text-white px-12 py-5 rounded-full font-bold uppercase tracking-[0.3em] text-[10px] hover:bg-theme-900 hover:shadow-xl hover:shadow-theme-900/20 transition-all duration-300 group/btn inline-flex items-center gap-4">
+                          <button 
+                            type="submit"
+                            disabled={isSubmittingWishes}
+                            className="bg-theme-800 text-white px-12 py-5 rounded-full font-bold uppercase tracking-[0.3em] text-[10px] hover:bg-theme-900 hover:shadow-xl hover:shadow-theme-900/20 transition-all duration-300 group/btn inline-flex items-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
                             <span className="w-1.5 h-1.5 bg-white rotate-45 group-hover/btn:scale-150 transition-transform" />
-                            Send Wishes
+                            {isSubmittingWishes ? "Sending..." : wishesSuccess ? "Wishes Sent!" : "Send Wishes"}
                             <span className="w-1.5 h-1.5 bg-white rotate-45 group-hover/btn:scale-150 transition-transform" />
                           </button>
                         </div>
@@ -959,7 +1054,7 @@ export default function WeddingInvitation() {
                   © 2026 Srima & Damith. <span className="hidden md:inline">|</span><br className="md:hidden block mt-2" /> All rights reserved.
                 </p>
                 <p className="text-[8px] md:text-[10px] tracking-[0.3em] text-stone-400">
-                  Contact: <a href="tel:0716613988" className="text-theme-600 font-bold hover:text-theme-800 transition-colors">Srima – 071 6613988</a>
+                  Contact: <a href="tel:0716613988" className="text-theme-600 font-bold hover:text-theme-800 transition-colors">Srima – 071 8085101</a>
                 </p>
               </footer>
             </div>
